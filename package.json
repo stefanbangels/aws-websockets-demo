@@ -1,0 +1,15 @@
+{
+  "name": "@assertdevelopments/aws-websockets-demo",
+  "description": "Demo material for the AWS Web Sockets presentation",
+  "files": [
+    "src",
+    "serverless",
+    "serverless.yml",
+    "package-lock.json"
+  ],
+  "devDependencies": {
+    "aws-sdk": "^2.799.0",
+    "standard": "^16.0.4",
+    "serverless": "^2.66.2"
+  }
+}

@@ -1,0 +1,41 @@
+Resources:
+  AwsWebSocketsDemoLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: AwsWebSocketsDemoLambdaRole
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: [lambda.amazonaws.com]
+            Action: ['sts:AssumeRole']
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+      Policies:
+        - PolicyName: dynamoDbPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:DescribeTable
+                  - dynamodb:GetItem
+                  - dynamodb:BatchGetItem
+                  - dynamodb:PutItem
+                  - dynamodb:DeleteItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:BatchWriteItem
+                  - dynamodb:Query
+                  - dynamodb:ConditionCheckItem
+                Resource: 'arn:aws:dynamodb:*:*:table/*'
+        - PolicyName: ApiGatewayExecutionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'execute-api:Invoke'
+                  - 'execute-api:ManageConnections'
+                Resource:
+                  - 'arn:aws:execute-api:*:*:**/@connections/*'
+

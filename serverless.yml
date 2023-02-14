@@ -1,0 +1,58 @@
+service: aws-websockets-demo
+frameworkVersion: '>=2.37.2'
+variablesResolutionMode: 20210326
+
+package:
+  patterns:
+    - '!./**'
+    - './src/*.js'
+    - './src/utils/*.js'
+
+provider:
+  name: aws
+  region: 'eu-west-1'
+  profile: 'stefan'
+  stage: dev
+  deploymentBucket:
+    name: assertdevelopments
+  iam:
+    role: AwsWebSocketsDemoLambdaRole
+  versionFunctions: false
+  runtime: nodejs14.x
+  memorySize: 1024
+  timeout: 10
+
+functions:
+
+  connect-handler:
+    name: connect-handler
+    handler: src/handler.handleConnect
+    timeout: 30
+    memorySize: 1024
+    events:
+      - websocket:
+          route: $connect
+
+  disconnect-handler:
+    name: disconnect-handler
+    handler: src/handler.handleDisconnect
+    timeout: 30
+    memorySize: 1024
+    events:
+      - websocket:
+          route: $disconnect
+
+  message-handler:
+    name: message-handler
+    handler: src/handler.handleMessage
+    timeout: 30
+    memorySize: 1024
+    environment:
+      websocketEndpoint: !Sub '${WebsocketsApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/dev'
+    events:
+      - websocket:
+          route: $default
+
+resources:
+  - ${file(serverless/resources.yml)}
+  - ${file(serverless/dynamodb-resources.yml)}
